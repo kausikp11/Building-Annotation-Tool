@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <title>Annotation data collector</title>
+    <style>
+      label:has(input[required])::before{
+        content: " *";
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+</html>
+<div id="app">
+  <form @submit.prevent="submitForm">
+    <h1>Map Data</h1>
+
+    <p>
+      <label for="username">Username:
+      <input type="text" v-model="username" id="username" required>
+      </label>
+    </p>
+
+    <p>
+      <label for="building_id">Building id:
+      <input type="text" v-model="building_id" id="building_id" required>
+      </label>
+    </p>
+
+    <p>
+      Street name
+      <input type="text" v-model="street_name" />
+    </p>
+
+    <p>
+      <label for="filename">Front Elevation:
+      <input type="file" v-model="file_upload" id="filename" required>
+      </label>
+    </p>
+
+    <p>
+      <h2>Geo Coordinates:</h2>
+      <p>
+      <label for="latitude">Latitude (x.y&deg)
+      <input type="number" v-model="latitude" id="latitude" step="any" required>
+      </label>
+      <label for="longitude">Longitude (x.y&deg)
+      <input type="number" v-model="longitude" id="longitude" step="any" required>
+      </label>
+      </p>
+      <p>
+      <label for="altitude">altitude (m)
+      <input type="number" v-model="altitude" id="altitude" required>
+      </label>
+      <label for="accuracy">accuracy (m)
+      <input type="number" v-model="accuracy" id="accuracy" min="0" max="100" required>
+      </label>
+      </p>
+    </p>
+
+    <p>
+      <label id="date_time">Date and Time
+      <input type="datetime-local" v-model="date_time" id="date_time" required>
+      </label>
+    </p>
+    <p>
+      <label id="level">Ground or Stilt
+        <input type="checkbox" v-model="level" id="level" required>
+        <ul>Test1</ul>
+      </input>
+      </label>
+    </p>
+
+    <button type="submit">Submit</button>
+
+    <p v-if="error" style="color:red">{{ error }}</p>
+    <p v-if="success" style="color:green">{{ success }}</p>
+  </form>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+  const app = Vue.createApp({
+    // setup(){
+    //   const levelData = ref([]);
+    //   const buildingUse = ref([]);
+    //   const structure = ref([]);
+    //   const visual = ref([]);
+
+    //   const fetchLevel = async ()=>{
+    //     try{
+
+    //     }
+    //   }
+
+    // },
+    data() {
+      return {
+        username: "",
+        building_id: "",
+        success: "",
+        error: ""
+      };
+    },
+    methods: {
+      async submitForm() {
+        this.success = "";
+        this.error = "";
+
+        try {
+          const res = await fetch("/map_data", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            username: this.username,
+            building_id: this.building_code,
+            // front_elevation:null,
+            // geo_coordinate:null,
+            // date_time:null,
+            // no_of_storeys:null,
+            // use:null
+            })
+          });
+
+          // If server returns non-2xx
+          if (!res.ok) {
+            const text = await res.text(); // safe even if not JSON
+            throw new Error(text || `Request failed with status ${res.status}`);
+          }
+
+          // Optional: if server responds with JSON
+          // const data = await res.json();
+
+          this.success = "Submitted successfully!";
+          this.username = "";
+          this.building_code = "";
+        } catch (e) {
+          this.error = e.message || "Something went wrong";
+          console.error(e);
+        }
+      }
+    }
+  });
+
+  app.mount("#app");
+</script>
