@@ -12,46 +12,119 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datetime import datetime
+from enum import Enum
+from fastapi import FastAPI,UploadFile,File
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 import signal
 import sys
 from types import FrameType
-
-from flask import Flask
-
+from typing import Annotated
 from utils.logging import logger
 
-app = Flask(__name__)
 
+class Geo_coordinate(BaseModel):
+    latitude:float
+    longitude:float
+    altitude:float
+    accuracy:float
 
-@app.route("/")
-def hello() -> str:
-    # Use basic logging with custom fields
-    logger.info(logField="custom-entry", arbitraryField="custom-entry")
+class Level(str,Enum):
+    ground = "Ground"
+    stilt = "Stilt"
+    other = "Other"
 
-    # https://cloud.google.com/run/docs/logging#correlate-logs
-    logger.info("Child logger with trace Id.")
+class BuildingUse(str,Enum):
+    resdential = "Residential"
+    commercial = "Commercial"
+    hospital = "Hospital"
+    institutional = "Institutional"
+    recreational = "Recreational"
+    government = "Government"
+    religious = "Religious"
 
-    return "Hello, World!"
+class StructureType(str,Enum):
+    rcc_framed = "RCC Framed"
+    load_bearing = "Load Bearing"
+    other = "Other"
 
+class VisualAnalysis(str,Enum):
+    exposed_brick = "Expose brick"
+    wood = "Wood"
+    acp = "ACP - Aluminum composite panel"
+    stone = "Stone"
+    hpl = "HPL - High Pressure Laminate"
+    glass = "Glass"
+    textured_plaster = "Textured Plaster"
+    terracotta = "Terracotta"
+    metal_cladding = "Metal cladding"
+    tiles = "Ceramic Slab/tiles"
+    concrete = "Concrete"
+    plain_paint = "Plain paint"
+    other = "Other"
 
-def shutdown_handler(signal_int: int, frame: FrameType) -> None:
+class Annotation(BaseModel):
+    username:str
+    building_id:str
+    street_name:str | None = None
+    # front_elevation:Annotated[UploadFile,File()]
+    geo_coordinate:Geo_coordinate
+    date_time:datetime
+    level:Level #Enum
+    other_level:str|None
+    no_of_storeys:int
+    use:list[BuildingUse] #Enum
+    multiple_spec:str|None = None
+    structure_type:StructureType #Enum
+    other_structure:str|None = None
+    age_analysis: str|None = None
+    age: float
+    visual_analysis: list[VisualAnalysis] #Enum
+    other_visual_analysis:str|None = None
+
+def enum_list(enumerator):
+    value: list[enumerator] = [enum for enum in enumerator]
+    return value
+
+app = FastAPI()
+
+@app.get("/test")
+async def root():
+    return {"message":"Hello World"}
+
+@app.get("/level")
+async def level():
+    return enum_list(Level)
+
+@app.get("/use")
+async def use():
+    return enum_list(BuildingUse)
+
+@app.get("/structre")
+async def structre():
+    return enum_list(StructureType)
+
+@app.get("/visual")
+async def visual():
+    return enum_list(VisualAnalysis)
+
+@app.post("/map_data")
+async def annotation_input(data:Annotation):
+    return data
+
+def shutdown_handler(signal_int:int,frame:FrameType)->None:
     logger.info(f"Caught Signal {signal.strsignal(signal_int)}")
-
     from utils.logging import flush
 
+    print("came")
     flush()
 
-    # Safely exit program
     sys.exit(0)
 
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 if __name__ == "__main__":
-    # Running application locally, outside of a Google Cloud Environment
-
-    # handles Ctrl-C termination
-    signal.signal(signal.SIGINT, shutdown_handler)
-
-    app.run(host="localhost", port=8080, debug=True)
+    signal.signal(signal.SIGINT,shutdown_handler)
 else:
-    # handles Cloud Run container termination
-    signal.signal(signal.SIGTERM, shutdown_handler)
+    signal.signal(signal.SIGTERM,shutdown_handler)
