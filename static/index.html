@@ -15,7 +15,7 @@
       font-weight: bold;
     }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 </head>
@@ -66,15 +66,15 @@
         <input type="number" v-model="altitude" id="altitude" required>
       </label>
       <label for="accuracy">accuracy (m)
-        <input type="number" v-model="accuracy" id="accuracy" min="0" max="100" required>
+        <input type="number" v-model="accuracy" id="accuracy" min="0" required>
       </label>
     </p>
     <h3>Pick location on map</h3>
-<div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
+    <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
 
-<button type="button" @click="getCurrentLocation">
-  Use Current Location
-</button>
+    <button type="button" @click="getCurrentLocation">
+      Use Current Location
+    </button>
 
     </p>
 
@@ -181,11 +181,11 @@
         street_name: "",
         front_elevation: null,
         latitude: null,
-    longitude: null,
-    altitude: 0,
-    accuracy: null,
-    map: null,
-    marker: null,
+        longitude: null,
+        altitude: 0,
+        accuracy: null,
+        map: null,
+        marker: null,
         geo_coordinate: { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
         date_time: "",
         other_level: "",
@@ -202,8 +202,9 @@
       };
     },
     mounted() {
-  this.initMap();
-},
+      this.initMap();
+      this.setCurrentDateTime();
+    },
 
     created() {
       this.fetchCategories("level", "levelDatas");
@@ -213,61 +214,74 @@
     },
     methods: {
       initMap() {
-    // Default location (India center)
-    const defaultLat = 20.5937;
-    const defaultLng = 78.9629;
+        // Default location (India center)
+        const defaultLat = 20.5937;
+        const defaultLng = 78.9629;
 
-    this.map = L.map("map").setView([defaultLat, defaultLng], 5);
+        this.map = L.map("map").setView([defaultLat, defaultLng], 5);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors"
-    }).addTo(this.map);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors"
+        }).addTo(this.map);
 
-    // Click to select location
-    this.map.on("click", (e) => {
-      this.setMarker(e.latlng.lat, e.latlng.lng);
-    });
-  },
-
-  setMarker(lat, lng) {
-    this.latitude = lat;
-    this.longitude = lng;
-
-    if (this.marker) {
-      this.marker.setLatLng([lat, lng]);
-    } else {
-      this.marker = L.marker([lat, lng]).addTo(this.map);
-    }
-  },
-
-  getCurrentLocation() {
-    if (!navigator.geolocation) {
-      alert("Geolocation not supported");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude, accuracy, altitude } = position.coords;
-
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.accuracy = accuracy;
-        this.altitude = altitude || 0;
-
-        this.map.setView([latitude, longitude], 18);
-        this.setMarker(latitude, longitude);
+        // Click to select location
+        this.map.on("click", (e) => {
+          this.setMarker(e.latlng.lat, e.latlng.lng);
+        });
       },
-      (err) => {
-        alert("Location permission denied or unavailable");
-        console.error(err);
+      setCurrentDateTime() {
+        const now = new Date();
+
+        const pad = (n) => n.toString().padStart(2, "0");
+
+        const formatted =
+          now.getFullYear() + "-" +
+          pad(now.getMonth() + 1) + "-" +
+          pad(now.getDate()) + "T" +
+          pad(now.getHours()) + ":" +
+          pad(now.getMinutes());
+
+        this.date_time = formatted;
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000
-      }
-    );
-  },
+      setMarker(lat, lng) {
+        this.latitude = lat;
+        this.longitude = lng;
+
+        if (this.marker) {
+          this.marker.setLatLng([lat, lng]);
+        } else {
+          this.marker = L.marker([lat, lng]).addTo(this.map);
+        }
+      },
+
+      getCurrentLocation() {
+        if (!navigator.geolocation) {
+          alert("Geolocation not supported");
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude, accuracy, altitude } = position.coords;
+
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.accuracy = accuracy;
+            this.altitude = altitude || 0;
+
+            this.map.setView([latitude, longitude], 18);
+            this.setMarker(latitude, longitude);
+          },
+          (err) => {
+            alert("Location permission denied or unavailable");
+            console.error(err);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000
+          }
+        );
+      },
       fetchCategories(link, variable) {
         this.loading = true;
         const apiUrl = "https://building-annotation-tool-702492869416.europe-west1.run.app/" + link;
@@ -281,41 +295,41 @@
             this.error = "Failed to load categories:" + link;
             this.loading = false
           })
-        console.log(this.variable);
+        //console.log(this.variable);
       },
       onFileChange(event) {
         this.front_elevation = event.target.files[0];
       },
-      async updateLater(){
+      async updateLater() {
         await new Promise(r => setTimeout(r, 5000));
-        this.success= "",
-        this.error= ""
+        this.success = "",
+          this.error = ""
       },
-      reset(){
-        this.levelDatas= [],
-        this.selectedLevel= "",
-        this.buildingUse= [],
-        this.selectedBuilding= [],
-        this.structure= [],
-        this.selectedStructure= "",
-        this.visual= [],
-        this.selectedVisual= [],
-        this.username= "",
-        this.building_id= "",
-        this.street_name= "",
-        this.front_elevation= null,
-        this.geo_coordinate= { latitude: 0, longitude:0, altitude: 0, accuracy: 0 },
-        this.date_time= "",
-        this.other_level= "",
-        this.no_of_storeys= 0,
-        this.use= "",
-        this.multiple_spec= "",
-        this.other_structure= "",
-        this.age_analysis= "",
-        this.age= 0,
-        this.other_visual_analysis= "",
-        this.loading= false,
-        this.fetchCategories("level", "levelDatas");
+      reset() {
+        this.levelDatas = [],
+          this.selectedLevel = "",
+          this.buildingUse = [],
+          this.selectedBuilding = [],
+          this.structure = [],
+          this.selectedStructure = "",
+          this.visual = [],
+          this.selectedVisual = [],
+          this.username = "",
+          this.building_id = "",
+          this.street_name = "",
+          this.front_elevation = null,
+          this.geo_coordinate = { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
+          this.date_time = "",
+          this.other_level = "",
+          this.no_of_storeys = 0,
+          this.use = "",
+          this.multiple_spec = "",
+          this.other_structure = "",
+          this.age_analysis = "",
+          this.age = 0,
+          this.other_visual_analysis = "",
+          this.loading = false,
+          this.fetchCategories("level", "levelDatas");
         this.fetchCategories("use", "buildingUse");
         this.fetchCategories("structre", "structure");
         this.fetchCategories("visual", "visual");
@@ -352,14 +366,7 @@
             visual_analysis: this.selectedVisual,
             other_visual_analysis: this.other_visual_analysis
           };
-
-          // Append JSON as string
-          // formData.append(
-          //   "data",
-          //   new Blob([JSON.stringify(annotationData)], {
-          //     type: "application/json"
-          //   })
-          // );
+          //append json as string
           formData.append("data", JSON.stringify(annotationData));
 
           // Append file

@@ -124,7 +124,7 @@ async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()
     # print(annotation)
     # print(image.filename)
     # print(image.file)
-    image_filename = f"images/{annotation.username}_{annotation.building_id}_{annotation.date_time}.{image.filename.split(".")[-1]}"
+    image_filename = f"images/{annotation.username}_{annotation.building_id}_{annotation.date_time}.{image.filename.split('.')[-1]}"
     upload_blob(bucket_name,image,image_filename)
     return data
 
@@ -150,10 +150,6 @@ def upload_blob(bucket_name, file, destination_blob_name):
     generation_match_precondition = 0
 
     blob.upload_from_file(file.file, content_type=file.content_type,if_generation_match=generation_match_precondition)
-
-    print(
-        f"File {destination_blob_name} uploaded to {destination_blob_name}."
-    )
 
 
 def shutdown_handler(signal_int:int,frame:FrameType)->None:
