@@ -113,18 +113,19 @@ async def visual():
 
 @app.post("/map_data")
 async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()):
-    bucket_name, destination_blob_name = "building-annotation-groundtruth", "file.json"
+    data_dict = json.loads(data)
+    annotation = Annotation(**data_dict)
+    bucket_name, destination_blob_name = "building-annotation-groundtruth", f"json/{annotation.username}_{annotation.building_id}_{annotation.date_time}.json"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-    data_dict = json.loads(data)
-    annotation = Annotation(**data_dict)
-    blob.upload_from_string(annotation.model_dump_json(),)
+    blob.upload_from_string(annotation.model_dump_json())
     # file_content = await image.read()
-    print(annotation)
-    print(image.filename)
-    print(image.file)
-    upload_blob(bucket_name,image,image.filename)
+    # print(annotation)
+    # print(image.filename)
+    # print(image.file)
+    image_filename = f"images/{annotation.username}_{annotation.building_id}_{annotation.date_time}.{image.filename.split(".")[-1]}"
+    upload_blob(bucket_name,image,image_filename)
     return data
 
 def upload_blob(bucket_name, file, destination_blob_name):
@@ -138,7 +139,7 @@ def upload_blob(bucket_name, file, destination_blob_name):
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob("image/"+destination_blob_name)
+    blob = bucket.blob(destination_blob_name)
 
     # Optional: set a generation-match precondition to avoid potential race conditions
     # and data corruptions. The request to upload is aborted if the object's
