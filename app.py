@@ -120,11 +120,11 @@ async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()
     data_dict = json.loads(data)
     annotation = Annotation(**data_dict)
     blob.upload_from_string(annotation.model_dump_json(),)
-    file_content = await image.read()
-    upload_blob(bucket_name,image,image.filename)
+    # file_content = await image.read()
     print(annotation)
     print(image.filename)
     print(image.file)
+    upload_blob(bucket_name,image,image.filename)
     return data
 
 def upload_blob(bucket_name, file, destination_blob_name):
@@ -148,7 +148,7 @@ def upload_blob(bucket_name, file, destination_blob_name):
     # generation-match precondition using its generation number.
     generation_match_precondition = 0
 
-    blob.upload_from_file(file.file, if_generation_match=generation_match_precondition,content_type=file.content_type)
+    blob.upload_from_file(file.file, content_type=file.content_type,if_generation_match=generation_match_precondition)
 
     print(
         f"File {destination_blob_name} uploaded to {destination_blob_name}."
@@ -158,8 +158,6 @@ def upload_blob(bucket_name, file, destination_blob_name):
 def shutdown_handler(signal_int:int,frame:FrameType)->None:
     logger.info(f"Caught Signal {signal.strsignal(signal_int)}")
     from utils.logging import flush
-
-    print("came")
     flush()
 
     sys.exit(0)
