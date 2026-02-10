@@ -14,8 +14,9 @@
 
 from datetime import datetime
 from enum import Enum
-from fastapi import FastAPI,UploadFile,File
+from fastapi import FastAPI,UploadFile,File, Form
 from fastapi.staticfiles import StaticFiles
+import json
 from pydantic import BaseModel
 import signal
 import sys
@@ -68,21 +69,21 @@ class VisualAnalysis(str,Enum):
 class Annotation(BaseModel):
     username:str
     building_id:str
-    # street_name:str | None = None
-    # # front_elevation:Annotated[UploadFile,File()]
-    # geo_coordinate:Geo_coordinate
-    # date_time:datetime
-    # level:Level #Enum
-    # other_level:str|None
-    # no_of_storeys:int
-    # use:list[BuildingUse] #Enum
-    # multiple_spec:str|None = None
-    # structure_type:StructureType #Enum
-    # other_structure:str|None = None
-    # age_analysis: str|None = None
-    # age: float
-    # visual_analysis: list[VisualAnalysis] #Enum
-    # other_visual_analysis:str|None = None
+    street_name:str | None = None
+    # front_elevation:Annotated[UploadFile,File()]
+    geo_coordinate:Geo_coordinate
+    date_time:datetime
+    level:Level #Enum selectedLevel
+    other_level:str|None
+    no_of_storeys:int
+    use:list[BuildingUse] #Enum selectedBuilding
+    multiple_spec:str|None = None
+    structure_type:StructureType #Enum selectedStructure
+    other_structure:str|None = None
+    age_analysis: str|None = None
+    age: float
+    visual_analysis: list[VisualAnalysis] #Enum selectedVisual
+    other_visual_analysis:str|None = None
 
 def enum_list(enumerator):
     value: list[enumerator] = [enum for enum in enumerator]
@@ -111,15 +112,22 @@ async def visual():
     return enum_list(VisualAnalysis)
 
 @app.post("/map_data")
-async def annotation_input(data:Annotation):
+async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()):
     bucket_name, destination_blob_name = "building-annotation-groundtruth", "file.json"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-    blob.upload_from_string(data.model_dump_json(),)
+    data_dict = json.loads(data)
+    annotation = Annotation(**data_dict)
+    blob.upload_from_string(annotation.model_dump_json(),)
+    file_content = await image.read()
+    upload_blob(bucket_name,image,image.filename)
+    print(annotation)
+    print(image.filename)
+    print(image.file)
     return data
 
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
+def upload_blob(bucket_name, file, destination_blob_name):
     """Uploads a file to the bucket."""
     # The ID of your GCS bucket
     # bucket_name = "your-bucket-name"
@@ -130,7 +138,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
+    blob = bucket.blob("image/"+destination_blob_name)
 
     # Optional: set a generation-match precondition to avoid potential race conditions
     # and data corruptions. The request to upload is aborted if the object's
@@ -140,10 +148,10 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     # generation-match precondition using its generation number.
     generation_match_precondition = 0
 
-    blob.upload_from_filename(source_file_name, if_generation_match=generation_match_precondition)
+    blob.upload_from_file(file.file, if_generation_match=generation_match_precondition,content_type=file.content_type)
 
     print(
-        f"File {source_file_name} uploaded to {destination_blob_name}."
+        f"File {destination_blob_name} uploaded to {destination_blob_name}."
     )
 
 

@@ -1,28 +1,42 @@
 <html>
-  <head>
-    <title>Annotation data collector</title>
-    <style>
-      label:has(input[required])::before{
-        content: " *";
-        color: red;
-        font-weight: bold;
-      }
-    </style>
-  </head>
+
+<head>
+  <title>Annotation data collector</title>
+  <style>
+    label:has(input[required])::before {
+      content: " *";
+      color: red;
+      font-weight: bold;
+    }
+
+    .required::before {
+      content: " *";
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+</head>
+
 </html>
 <div id="app">
   <form @submit.prevent="submitForm">
     <h1>Map Data</h1>
 
+    <p v-if="error" style="color:red">{{ error }}</p>
+    <p v-if="success" style="color:green">{{ success }}</p>
+
     <p>
       <label for="username">Username:
-      <input type="text" v-model="username" id="username" required>
+        <input type="text" v-model="username" id="username" name="username" required>
       </label>
     </p>
 
     <p>
       <label for="building_id">Building id:
-      <input type="text" v-model="building_id" id="building_id" required>
+        <input type="text" v-model="building_id" id="building_id" required>
       </label>
     </p>
 
@@ -32,112 +46,395 @@
     </p>
 
     <p>
-      <label for="filename">Front Elevation:
-      <input type="file" v-model="file_upload" id="filename" required>
+      <label for="front_elevation">Front Elevation:
+        <input type="file" id="front_elevation" @change="onFileChange" required />
       </label>
     </p>
 
     <p>
-      <h2>Geo Coordinates:</h2>
-      <p>
+    <h2>Geo Coordinates:</h2>
+    <p>
       <label for="latitude">Latitude (x.y&deg)
-      <input type="number" v-model="latitude" id="latitude" step="any" required>
+        <input type="number" v-model="latitude" id="latitude" step="any" required>
       </label>
       <label for="longitude">Longitude (x.y&deg)
-      <input type="number" v-model="longitude" id="longitude" step="any" required>
+        <input type="number" v-model="longitude" id="longitude" step="any" required>
       </label>
-      </p>
-      <p>
+    </p>
+    <p>
       <label for="altitude">altitude (m)
-      <input type="number" v-model="altitude" id="altitude" required>
+        <input type="number" v-model="altitude" id="altitude" required>
       </label>
       <label for="accuracy">accuracy (m)
-      <input type="number" v-model="accuracy" id="accuracy" min="0" max="100" required>
+        <input type="number" v-model="accuracy" id="accuracy" min="0" max="100" required>
       </label>
-      </p>
+    </p>
+    <h3>Pick location on map</h3>
+<div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
+
+<button type="button" @click="getCurrentLocation">
+  Use Current Location
+</button>
+
     </p>
 
     <p>
       <label id="date_time">Date and Time
-      <input type="datetime-local" v-model="date_time" id="date_time" required>
+        <input type="datetime-local" v-model="date_time" id="date_time" required>
       </label>
     </p>
     <p>
-      <label id="level">Ground or Stilt
-        <input type="checkbox" v-model="level" id="level" required>
-        <ul>Test1</ul>
-      </input>
+      <label id="level" class="required">Ground or Stilt
+        <p v-for="levelData in levelDatas" :key="levelData" v-if="!loading && !error">
+          <input type="radio" :value="levelData" v-model="selectedLevel" required />
+          {{levelData}}
+        </p>
+      </label>
+    </p>
+    <p>
+      <label for="other_level">If other - Mention it
+        <input type="text" v-model="other_level" id="other_level">
+      </label>
+    </p>
+    <p>
+      <label for="no_of_storeys">No. of Storey(Excluding Ground or Stilt)
+        <input type="number" v-model="no_of_storeys" id="no_of_storeys" required>
+      </label>
+    </p>
+    <p>
+      <label id="use" class="required">Building Use
+        <p v-for="use in buildingUse" :key="use" v-if="!loading && !error">
+          <input type="checkbox" :value="use" v-model="selectedBuilding" />
+          {{use}}
+        </p>
+      </label>
+    </p>
+    <p>
+      <label for="multiple_spec">If selected multiple options, give specifications
+        <input type="text" v-model="multiple_spec" id="multiple_spec" />
       </label>
     </p>
 
+    <p>
+      <label id="structure" class="required">Structure type
+        <p v-for="struct in structure" :key="struct" v-if="!loading && !error">
+          <input type="radio" :value="struct" v-model="selectedStructure" required />
+          {{struct}}
+        </p>
+      </label>
+    </p>
+
+    <p>
+      <label for="other_structure">If selected others, Specify
+        <input type="text" v-model="other_structure" id="other_structure" />
+      </label>
+    </p>
+
+    <p>
+      <label for="age">Age of the building
+        <input type="number" v-model="age" id="age" required>
+      </label>
+    </p>
+
+    <p>
+      <label for="age_analysis">How did you arrive at the age, specify
+        <input type="text" v-model="age_analysis" id="age_analysis">
+      </label>
+    </p>
+
+    <p>
+      <label id="visual" class="required">Visual analysis of the building materials used
+        <p v-for="vis in visual" :key="vis" v-if="!loading && !error">
+          <input type="checkbox" :value="vis" v-model="selectedVisual" />
+          {{vis}}
+        </p>
+      </label>
+    </p>
+    <p>
+      <label for="other_visual_analysis">If other - Mention it
+        <input type="text" v-model="other_visual_analysis" id="other_visual_analysis">
+      </label>
+    </p>
+
+
     <button type="submit">Submit</button>
 
-    <p v-if="error" style="color:red">{{ error }}</p>
-    <p v-if="success" style="color:green">{{ success }}</p>
   </form>
 </div>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
   const app = Vue.createApp({
-    // setup(){
-    //   const levelData = ref([]);
-    //   const buildingUse = ref([]);
-    //   const structure = ref([]);
-    //   const visual = ref([]);
-
-    //   const fetchLevel = async ()=>{
-    //     try{
-
-    //     }
-    //   }
-
-    // },
     data() {
       return {
+        levelDatas: [],
+        selectedLevel: "",
+        buildingUse: [],
+        selectedBuilding: [],
+        structure: [],
+        selectedStructure: "",
+        visual: [],
+        selectedVisual: [],
         username: "",
         building_id: "",
+        street_name: "",
+        front_elevation: null,
+        latitude: null,
+    longitude: null,
+    altitude: 0,
+    accuracy: null,
+    map: null,
+    marker: null,
+        geo_coordinate: { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
+        date_time: "",
+        other_level: "",
+        no_of_storeys: 0,
+        use: "",
+        multiple_spec: "",
+        other_structure: "",
+        age_analysis: "",
+        age: 0,
+        other_visual_analysis: "",
+        loading: false,
         success: "",
         error: ""
       };
     },
+    mounted() {
+  this.initMap();
+},
+
+    created() {
+      this.fetchCategories("level", "levelDatas");
+      this.fetchCategories("use", "buildingUse");
+      this.fetchCategories("structre", "structure");
+      this.fetchCategories("visual", "visual");
+    },
     methods: {
+      initMap() {
+    // Default location (India center)
+    const defaultLat = 20.5937;
+    const defaultLng = 78.9629;
+
+    this.map = L.map("map").setView([defaultLat, defaultLng], 5);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(this.map);
+
+    // Click to select location
+    this.map.on("click", (e) => {
+      this.setMarker(e.latlng.lat, e.latlng.lng);
+    });
+  },
+
+  setMarker(lat, lng) {
+    this.latitude = lat;
+    this.longitude = lng;
+
+    if (this.marker) {
+      this.marker.setLatLng([lat, lng]);
+    } else {
+      this.marker = L.marker([lat, lng]).addTo(this.map);
+    }
+  },
+
+  getCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude, accuracy, altitude } = position.coords;
+
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.accuracy = accuracy;
+        this.altitude = altitude || 0;
+
+        this.map.setView([latitude, longitude], 18);
+        this.setMarker(latitude, longitude);
+      },
+      (err) => {
+        alert("Location permission denied or unavailable");
+        console.error(err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000
+      }
+    );
+  },
+      fetchCategories(link, variable) {
+        this.loading = true;
+        const apiUrl = "http://0.0.0.0:8080/" + link;
+
+        axios.get(apiUrl).then(response => {
+          this[variable] = response.data
+          this.loading = false;
+        })
+          .catch(error => {
+            console.error("Error fetching data", error);
+            this.error = "Failed to load categories:" + link;
+            this.loading = false
+          })
+        console.log(this.variable);
+      },
+      onFileChange(event) {
+        this.front_elevation = event.target.files[0];
+      },
+      async updateLater(){
+        await new Promise(r => setTimeout(r, 5000));
+        this.success= "",
+        this.error= ""
+      },
+      reset(){
+        this.levelDatas= [],
+        this.selectedLevel= "",
+        this.buildingUse= [],
+        this.selectedBuilding= [],
+        this.structure= [],
+        this.selectedStructure= "",
+        this.visual= [],
+        this.selectedVisual= [],
+        this.username= "",
+        this.building_id= "",
+        this.street_name= "",
+        this.front_elevation= null,
+        this.geo_coordinate= { latitude: 0, longitude:0, altitude: 0, accuracy: 0 },
+        this.date_time= "",
+        this.other_level= "",
+        this.no_of_storeys= 0,
+        this.use= "",
+        this.multiple_spec= "",
+        this.other_structure= "",
+        this.age_analysis= "",
+        this.age= 0,
+        this.other_visual_analysis= "",
+        this.loading= false,
+        this.fetchCategories("level", "levelDatas");
+        this.fetchCategories("use", "buildingUse");
+        this.fetchCategories("structre", "structure");
+        this.fetchCategories("visual", "visual");
+        this.updateLater();
+      },
       async submitForm() {
         this.success = "";
         this.error = "";
 
         try {
-          const res = await fetch("/map_data", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+          const formData = new FormData();
+
+          // JSON payload (must match FastAPI model exactly)
+          const annotationData = {
             username: this.username,
             building_id: this.building_id,
-            // front_elevation:null,
-            // geo_coordinate:null,
-            // date_time:null,
-            // no_of_storeys:null,
-            // use:null
-            })
+            street_name: this.street_name,
+            geo_coordinate: {
+              latitude: this.latitude,
+              longitude: this.longitude,
+              altitude: this.altitude,
+              accuracy: this.accuracy
+            },
+            date_time: this.date_time,
+            level: this.selectedLevel,
+            other_level: this.other_level,
+            no_of_storeys: this.no_of_storeys,
+            use: this.selectedBuilding,
+            multiple_spec: this.multiple_spec,
+            structure_type: this.selectedStructure,
+            other_structure: this.other_structure,
+            age_analysis: this.age_analysis,
+            age: this.age,
+            visual_analysis: this.selectedVisual,
+            other_visual_analysis: this.other_visual_analysis
+          };
+
+          // Append JSON as string
+          // formData.append(
+          //   "data",
+          //   new Blob([JSON.stringify(annotationData)], {
+          //     type: "application/json"
+          //   })
+          // );
+          formData.append("data", JSON.stringify(annotationData));
+
+          // Append file
+          formData.append("image", this.front_elevation);
+
+          const res = await fetch("/map_data", {
+            method: "POST",
+            body: formData
           });
 
-          // If server returns non-2xx
           if (!res.ok) {
-            const text = await res.text(); // safe even if not JSON
-            throw new Error(text || `Request failed with status ${res.status}`);
+            const text = await res.text();
+            throw new Error(text || `Request failed (${res.status})`);
           }
 
-          // Optional: if server responds with JSON
-          // const data = await res.json();
-
           this.success = "Submitted successfully!";
-          this.username = "";
-          this.building_code = "";
-        } catch (e) {
-          this.error = e.message || "Something went wrong";
-          console.error(e);
+        } catch (err) {
+          console.error(err);
+          this.error = err.message || "Upload failed";
         }
+        this.reset();
       }
+
+      // async submitForm() {
+      //   this.success = "";
+      //   this.error = "";
+      //   console.log(this.selectedLevel);
+      //   try {
+      //     const res = await fetch("/map_data", {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({
+      //       username: this.username,
+      //       building_id: this.building_id,
+      //       street_name: this.street_name,
+      //       // front_elevation:this.front_elevation,
+      //       geo_coordinate:{latitude:this.latitude,
+      //         longitude:this.longitude,
+      //         altitude:this.altitude,
+      //         accuracy: this.accuracy
+      //       },
+      //       date_time:this.date_time,
+      //       level:this.selectedLevel,
+      //       other_level:this.other_level,
+      //       no_of_storeys:this.no_of_storeys,
+      //       use:this.selectedBuilding,
+      //       multiple_spec:this.multiple_spec,
+      //       structure_type:this.selectedStructure,
+      //       other_structure:this.other_structure,
+      //       age_analysis:this.age_analysis,
+      //       age:this.age,
+      //       visual_analysis:this.selectedVisual,
+      //       other_visual_analysis:this.other_visual_analysis
+      //       })
+      //     });
+
+      //     console.log(res.body);
+
+      //     // If server returns non-2xx
+      //     if (!res.ok) {
+      //       const text = await res.text(); // safe even if not JSON
+      //       throw new Error(text || `Request failed with status ${res.status}`);
+      //     }
+
+      //     // Optional: if server responds with JSON
+      //     // const data = await res.json();
+
+      //     this.success = "Submitted successfully!";
+      //     this.username = "";
+      //     this.building_code = "";
+      //   } catch (e) {
+      //     this.error = e.message || "Something went wrong";
+      //     console.error(e);
+      //   }
+      // }
     }
   });
 
