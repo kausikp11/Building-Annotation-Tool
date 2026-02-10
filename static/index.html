@@ -270,7 +270,7 @@
   },
       fetchCategories(link, variable) {
         this.loading = true;
-        const apiUrl = "https://0.0.0.0:8080/" + link;
+        const apiUrl = "https://building-annotation-tool-702492869416.europe-west1.run.app/" + link;
 
         axios.get(apiUrl).then(response => {
           this[variable] = response.data
