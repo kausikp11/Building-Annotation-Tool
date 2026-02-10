@@ -270,7 +270,7 @@
   },
       fetchCategories(link, variable) {
         this.loading = true;
-        const apiUrl = "http://0.0.0.0:8080/" + link;
+        const apiUrl = "https://0.0.0.0:8080/" + link;
 
         axios.get(apiUrl).then(response => {
           this[variable] = response.data
