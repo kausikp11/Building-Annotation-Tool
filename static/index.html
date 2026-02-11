@@ -316,8 +316,8 @@
 
 
     <button type="submit">Submit</button>
-    <p v-if="error" style="color:red">{{ error }}</p>
-    <p v-if="success" style="color:green">{{ success }}</p>
+    <p v-if="error" v-model="error" style="color:red">{{ error }}</p>
+    <p v-if="success" v-model="success" style="color:green">{{ success }}</p>
 
   </form>
 </div>
@@ -462,7 +462,7 @@
       async updateLater() {
         await new Promise(r => setTimeout(r, 5000));
         this.success = "",
-          this.error = ""
+        this.error = ""
       },
       reset() {
         this.levelDatas = [],
