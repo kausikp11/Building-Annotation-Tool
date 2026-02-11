@@ -197,7 +197,7 @@
 
     <p>
       <label for="front_elevation">Front Elevation:
-        <input type="file" id="front_elevation" v-model="front_elevation" @change="onFileChange" accept="image/*" required />
+        <input type="file" id="front_elevation" ref="fileInput" @change="onFileChange" accept="image/*" required />
       </label>
     </p>
 
@@ -492,12 +492,15 @@
         this.age = 0,
         this.other_visual_analysis = "",
         this.loading = false,
+        this.setCurrentDateTime();
+        if (this.$refs.fileInput) {
+          this.$refs.fileInput.value = null;
+        }
         this.fetchCategories("level", "levelDatas");
         this.fetchCategories("use", "buildingUse");
         this.fetchCategories("structre", "structure");
         this.fetchCategories("visual", "visual");
         this.initMap();
-        this.setCurrentDateTime();
         this.updateLater();
       },
       async submitForm() {
