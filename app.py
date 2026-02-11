@@ -114,12 +114,12 @@ async def visual():
 async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()):
     data_dict = json.loads(data)
     annotation = Annotation(**data_dict)
-    bucket_name, destination_blob_name = "building-annotation-groundtruth", f"json/{annotation.username}_{annotation.building_id}_{annotation.date_time}.json"
+    bucket_name, destination_blob_name = "building-annotation-groundtruth", f"json/{annotation.username.lower()}_{annotation.building_id}_{annotation.date_time}_lat_{annotation.geo_coordinate.latitude}_long_{annotation.geo_coordinate.longitude}.json"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(annotation.model_dump_json())
-    image_filename = f"images/{annotation.username}_{annotation.building_id}_{annotation.date_time}.{image.filename.split('.')[-1]}"
+    image_filename = f"images/{annotation.username.lower()}_{annotation.building_id}_{annotation.date_time}_lat_{annotation.geo_coordinate.latitude}_long_{annotation.geo_coordinate.longitude}.{image.filename.split('.')[-1]}"
     upload_blob(bucket_name,image,image_filename)
     return data
 
