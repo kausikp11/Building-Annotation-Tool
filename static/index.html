@@ -212,15 +212,15 @@ button.secondary:hover {
 
   <div>
     <label>Altitude (m)</label>
-    <input type="number" v-model="altitude" />
-    <span v-if="altitude" class="altitude-badge">
+    <input type="number" v-model="altitude" step="any"/>
+    <span v-if="altitude" class="accuracy-badge">
       ± {{ altitude.toFixed(1) }} m
     </span>
   </div>
 
   <div>
     <label>Accuracy (m)</label>
-    <input type="number" v-model="accuracy" />
+    <input type="number" v-model="accuracy" step="any"/>
     <span v-if="accuracy" class="accuracy-badge">
       ± {{ accuracy.toFixed(1) }} m
     </span>
@@ -445,7 +445,7 @@ button.secondary:hover {
       },
       fetchCategories(link, variable) {
         this.loading = true;
-        const apiUrl = "https://building-annotation-tool-702492869416.europe-west1.run.app/" + link;
+        const apiUrl = "/" + link;
 
         axios.get(apiUrl).then(response => {
           this[variable] = response.data
