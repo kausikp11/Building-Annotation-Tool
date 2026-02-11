@@ -14,152 +14,159 @@
       color: red;
       font-weight: bold;
     }
+
     :root {
-  --primary: #2563eb;      /* blue-600 */
-  --primary-dark: #1e40af;
-  --bg: #f8fafc;           /* slate-50 */
-  --card: #ffffff;
-  --text: #0f172a;         /* slate-900 */
-  --muted: #64748b;        /* slate-500 */
-  --border: #e2e8f0;       /* slate-200 */
-  --success: #16a34a;
-  --error: #dc2626;
-}
+      --primary: #2563eb;
+      /* blue-600 */
+      --primary-dark: #1e40af;
+      --bg: #f8fafc;
+      /* slate-50 */
+      --card: #ffffff;
+      --text: #0f172a;
+      /* slate-900 */
+      --muted: #64748b;
+      /* slate-500 */
+      --border: #e2e8f0;
+      /* slate-200 */
+      --success: #16a34a;
+      --error: #dc2626;
+    }
 
-* {
-  box-sizing: border-box;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-}
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-#app {
-  max-width: 920px;
-  margin: 24px auto;
-  padding: 0 16px;
-}
+    #app {
+      max-width: 920px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
 
-form {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-}
+    form {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
 
-h1 {
-  margin-top: 0;
-  font-size: 1.6rem;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 12px;
-}
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
 
-h2, h3 {
-  margin-top: 24px;
-  font-size: 1.2rem;
-  color: var(--primary-dark);
-}
+    h2,
+    h3 {
+      margin-top: 24px;
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+    }
 
-p {
-  margin: 0 0 16px;
-}
+    p {
+      margin: 0 0 16px;
+    }
 
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-}
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
 
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-size: 0.95rem;
-  background: white;
-}
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      background: white;
+    }
 
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-}
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
 
-input[type="radio"],
-input[type="checkbox"] {
-  width: auto;
-  margin-right: 6px;
-}
+    input[type="radio"],
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 6px;
+    }
 
-.field-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
+    .field-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
 
-button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
 
-button:hover {
-  background: var(--primary-dark);
-}
+    button:hover {
+      background: var(--primary-dark);
+    }
 
-button:active {
-  transform: scale(0.98);
-}
+    button:active {
+      transform: scale(0.98);
+    }
 
-button.secondary {
-  background: #e5e7eb;
-  color: var(--text);
-}
+    button.secondary {
+      background: #e5e7eb;
+      color: var(--text);
+    }
 
-button.secondary:hover {
-  background: #d1d5db;
-}
+    button.secondary:hover {
+      background: #d1d5db;
+    }
 
-.status-success {
-  color: var(--success);
-  font-weight: 600;
-}
+    .status-success {
+      color: var(--success);
+      font-weight: 600;
+    }
 
-.status-error {
-  color: var(--error);
-  font-weight: 600;
-}
+    .status-error {
+      color: var(--error);
+      font-weight: 600;
+    }
 
-#map {
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
+    #map {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
 
-.accuracy-badge {
-  display: inline-block;
-  background: #e0f2fe;
-  color: #0369a1;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  margin-top: 6px;
-}
+    .accuracy-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -200,41 +207,35 @@ button.secondary:hover {
     <p>
     <h2>Geo Coordinates:</h2>
     <div class="field-group">
-  <div>
-    <label class="required">Latitude</label>
-    <input type="number" v-model="latitude" step="any" required />
-  </div>
+      <div>
+        <label class="required">Latitude</label>
+        <input type="number" v-model="latitude" step="any" required />
+      </div>
 
-  <div>
-    <label class="required">Longitude</label>
-    <input type="number" v-model="longitude" step="any" required />
-  </div>
+      <div>
+        <label class="required">Longitude</label>
+        <input type="number" v-model="longitude" step="any" required />
+      </div>
 
-  <div>
-    <label>Altitude (m)</label>
-    <input type="number" v-model="altitude" step="any"/>
-    <span v-if="altitude" class="accuracy-badge">
-      ± {{ altitude.toFixed(1) }} m
-    </span>
-  </div>
+      <div>
+        <label>Altitude (m)</label>
+        <input type="number" v-model="altitude" step="any" />
+      </div>
 
-  <div>
-    <label>Accuracy (m)</label>
-    <input type="number" v-model="accuracy" step="any"/>
-    <span v-if="accuracy" class="accuracy-badge">
-      ± {{ accuracy.toFixed(1) }} m
-    </span>
-  </div>
-</div>
+      <div>
+        <label>Accuracy (m)</label>
+        <input type="number" v-model="accuracy" step="any" />
+      </div>
+    </div>
 
     <h3>Pick location on map</h3>
     <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
 
-<div style="display:flex; gap:12px; margin-bottom:12px;">
-  <button type="button" class="secondary" @click="getCurrentLocation">
-    📍 Use current location
-  </button>
-</div>
+    <div style="display:flex; gap:12px; margin-bottom:12px;">
+      <button type="button" class="secondary" @click="getCurrentLocation">
+        📍 Use current location
+      </button>
+    </div>
 
 
     </p>
@@ -456,7 +457,6 @@ button.secondary:hover {
             this.error = "Failed to load categories:" + link;
             this.loading = false
           })
-        //console.log(this.variable);
       },
       onFileChange(event) {
         this.front_elevation = event.target.files[0];
@@ -468,33 +468,39 @@ button.secondary:hover {
       },
       reset() {
         this.levelDatas = [],
-          this.selectedLevel = "",
-          this.buildingUse = [],
-          this.selectedBuilding = [],
-          this.structure = [],
-          this.selectedStructure = "",
-          this.visual = [],
-          this.selectedVisual = [],
-          this.username = "",
-          this.building_id = "",
-          this.street_name = "",
-          this.front_elevation = null,
-          this.geo_coordinate = { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
-          this.date_time = "",
-          this.other_level = "",
-          this.no_of_storeys = 0,
-          this.use = "",
-          this.multiple_spec = "",
-          this.other_structure = "",
-          this.age_analysis = "",
-          this.age = 0,
-          this.other_visual_analysis = "",
-          this.loading = false,
-          this.fetchCategories("level", "levelDatas");
+        this.selectedLevel = "",
+        this.buildingUse = [],
+        this.selectedBuilding = [],
+        this.structure = [],
+        this.selectedStructure = "",
+        this.visual = [],
+        this.selectedVisual = [],
+        this.username = "",
+        this.building_id = "",
+        this.street_name = "",
+        this.front_elevation = null,
+        this.geo_coordinate = { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
+        this.latitude = latitude,
+        this.longitude = longitude,
+        this.altitude = altitude,
+        this.accuracy = accuracy,
+        this.date_time = "",
+        this.other_level = "",
+        this.no_of_storeys = 0,
+        this.use = "",
+        this.multiple_spec = "",
+        this.other_structure = "",
+        this.age_analysis = "",
+        this.age = 0,
+        this.other_visual_analysis = "",
+        this.loading = false,
+        this.fetchCategories("level", "levelDatas");
         this.fetchCategories("use", "buildingUse");
         this.fetchCategories("structre", "structure");
         this.fetchCategories("visual", "visual");
         this.updateLater();
+        this.initMap();
+        this.setCurrentDateTime();
       },
       async submitForm() {
         this.success = "";
@@ -550,59 +556,6 @@ button.secondary:hover {
         }
         this.reset();
       }
-
-      // async submitForm() {
-      //   this.success = "";
-      //   this.error = "";
-      //   console.log(this.selectedLevel);
-      //   try {
-      //     const res = await fetch("/map_data", {
-      //       method: "POST",
-      //       headers: { "Content-Type": "application/json" },
-      //       body: JSON.stringify({
-      //       username: this.username,
-      //       building_id: this.building_id,
-      //       street_name: this.street_name,
-      //       // front_elevation:this.front_elevation,
-      //       geo_coordinate:{latitude:this.latitude,
-      //         longitude:this.longitude,
-      //         altitude:this.altitude,
-      //         accuracy: this.accuracy
-      //       },
-      //       date_time:this.date_time,
-      //       level:this.selectedLevel,
-      //       other_level:this.other_level,
-      //       no_of_storeys:this.no_of_storeys,
-      //       use:this.selectedBuilding,
-      //       multiple_spec:this.multiple_spec,
-      //       structure_type:this.selectedStructure,
-      //       other_structure:this.other_structure,
-      //       age_analysis:this.age_analysis,
-      //       age:this.age,
-      //       visual_analysis:this.selectedVisual,
-      //       other_visual_analysis:this.other_visual_analysis
-      //       })
-      //     });
-
-      //     console.log(res.body);
-
-      //     // If server returns non-2xx
-      //     if (!res.ok) {
-      //       const text = await res.text(); // safe even if not JSON
-      //       throw new Error(text || `Request failed with status ${res.status}`);
-      //     }
-
-      //     // Optional: if server responds with JSON
-      //     // const data = await res.json();
-
-      //     this.success = "Submitted successfully!";
-      //     this.username = "";
-      //     this.building_code = "";
-      //   } catch (e) {
-      //     this.error = e.message || "Something went wrong";
-      //     console.error(e);
-      //   }
-      // }
     }
   });
 

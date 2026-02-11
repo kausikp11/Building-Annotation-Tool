@@ -70,7 +70,6 @@ class Annotation(BaseModel):
     username:str
     building_id:str
     street_name:str | None = None
-    # front_elevation:Annotated[UploadFile,File()]
     geo_coordinate:Geo_coordinate
     date_time:datetime
     level:Level #Enum selectedLevel
@@ -120,10 +119,6 @@ async def annotation_input(image:Annotated[UploadFile,File()],data: str = Form()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(annotation.model_dump_json())
-    # file_content = await image.read()
-    # print(annotation)
-    # print(image.filename)
-    # print(image.file)
     image_filename = f"images/{annotation.username}_{annotation.building_id}_{annotation.date_time}.{image.filename.split('.')[-1]}"
     upload_blob(bucket_name,image,image_filename)
     return data
