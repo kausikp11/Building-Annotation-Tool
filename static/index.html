@@ -197,42 +197,43 @@
 
     <p>
       <label for="front_elevation">Front Elevation:
-        <input type="file" id="front_elevation" @change="onFileChange" required />
+        <input type="file" id="front_elevation" @change="onFileChange" accept="image/*" required />
       </label>
     </p>
 
     <p>
       <h2>Geo Coordinates:</h2>
-        <div class="field-group">
-          <div>
-            <label class="required">Latitude</label>
-            <input type="number" v-model="latitude" step="any" required />
-          </div>
-
-          <div>
-            <label class="required">Longitude</label>
-            <input type="number" v-model="longitude" step="any" required />
-          </div>
-
-          <div>
-            <label>Altitude (m)</label>
-            <input type="number" v-model="altitude" step="any" />
-          </div>
-
-          <div>
-            <label>Accuracy (m)</label>
-            <input type="number" v-model="accuracy" step="any" />
-          </div>
+      <div class="field-group">
+        <div>
+          <label class="required">Latitude</label>
+          <input type="number" v-model="latitude" step="any" required />
         </div>
+
+        <div>
+          <label class="required">Longitude</label>
+          <input type="number" v-model="longitude" step="any" required />
+        </div>
+
+        <div>
+          <label>Altitude (m)</label>
+          <input type="number" v-model="altitude" step="any" />
+        </div>
+
+        <div>
+          <label>Accuracy (m)</label>
+          <input type="number" v-model="accuracy" step="any" />
+        </div>
+      </div>
 
       <h3>Pick location on map</h3>
-        <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
+      <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;">
+      </div>
 
-        <div style="display:flex; gap:12px; margin-bottom:12px;">
-          <button type="button" class="secondary" @click="getCurrentLocation">
-            📍 Use current location
-          </button>
-        </div>
+      <div style="display:flex; gap:12px; margin-bottom:12px;">
+        <button type="button" class="secondary" @click="getCurrentLocation">
+          📍 Use current location
+        </button>
+      </div>
     </p>
 
     <p>
@@ -315,6 +316,8 @@
 
 
     <button type="submit">Submit</button>
+    <p v-if="error" style="color:red">{{ error }}</p>
+    <p v-if="success" style="color:green">{{ success }}</p>
 
   </form>
 </div>
