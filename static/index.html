@@ -460,11 +460,13 @@
         this.front_elevation = event.target.files[0];
       },
       async updateLater() {
+        console.log("Started updateLater");
         await new Promise(r => setTimeout(r, 5000));
+        console.log("Finished updateLater");
         this.success = "",
         this.error = ""
       },
-      reset() {
+      async reset() {
         this.levelDatas = [],
         this.selectedLevel = "",
         this.buildingUse = [],
@@ -501,7 +503,6 @@
         this.fetchCategories("structre", "structure");
         this.fetchCategories("visual", "visual");
         this.initMap();
-        this.updateLater();
       },
       async submitForm() {
         this.success = "";
@@ -551,6 +552,9 @@
           }
 
           this.success = "Submitted successfully!";
+
+           await this.updateLater();  // wait 5 sec
+           await this.reset();        // reset AFTER delay
         } catch (err) {
           console.error(err);
           this.error = err.message || "Upload failed";
