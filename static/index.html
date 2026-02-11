@@ -14,6 +14,152 @@
       color: red;
       font-weight: bold;
     }
+    :root {
+  --primary: #2563eb;      /* blue-600 */
+  --primary-dark: #1e40af;
+  --bg: #f8fafc;           /* slate-50 */
+  --card: #ffffff;
+  --text: #0f172a;         /* slate-900 */
+  --muted: #64748b;        /* slate-500 */
+  --border: #e2e8f0;       /* slate-200 */
+  --success: #16a34a;
+  --error: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+#app {
+  max-width: 920px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+form {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.6rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+h2, h3 {
+  margin-top: 24px;
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+}
+
+p {
+  margin: 0 0 16px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  background: white;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 6px;
+}
+
+.field-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button.secondary {
+  background: #e5e7eb;
+  color: var(--text);
+}
+
+button.secondary:hover {
+  background: #d1d5db;
+}
+
+.status-success {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.status-error {
+  color: var(--error);
+  font-weight: 600;
+}
+
+#map {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.accuracy-badge {
+  display: inline-block;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -53,28 +199,43 @@
 
     <p>
     <h2>Geo Coordinates:</h2>
-    <p>
-      <label for="latitude">Latitude (x.y&deg)
-        <input type="number" v-model="latitude" id="latitude" step="any" required>
-      </label>
-      <label for="longitude">Longitude (x.y&deg)
-        <input type="number" v-model="longitude" id="longitude" step="any" required>
-      </label>
-    </p>
-    <p>
-      <label for="altitude">altitude (m)
-        <input type="number" v-model="altitude" id="altitude" required>
-      </label>
-      <label for="accuracy">accuracy (m)
-        <input type="number" v-model="accuracy" id="accuracy" min="0" required>
-      </label>
-    </p>
+    <div class="field-group">
+  <div>
+    <label class="required">Latitude</label>
+    <input type="number" v-model="latitude" step="any" required />
+  </div>
+
+  <div>
+    <label class="required">Longitude</label>
+    <input type="number" v-model="longitude" step="any" required />
+  </div>
+
+  <div>
+    <label>Altitude (m)</label>
+    <input type="number" v-model="altitude" />
+    <span v-if="altitude" class="altitude-badge">
+      ± {{ altitude.toFixed(1) }} m
+    </span>
+  </div>
+
+  <div>
+    <label>Accuracy (m)</label>
+    <input type="number" v-model="accuracy" />
+    <span v-if="accuracy" class="accuracy-badge">
+      ± {{ accuracy.toFixed(1) }} m
+    </span>
+  </div>
+</div>
+
     <h3>Pick location on map</h3>
     <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
 
-    <button type="button" @click="getCurrentLocation">
-      Use Current Location
-    </button>
+<div style="display:flex; gap:12px; margin-bottom:12px;">
+  <button type="button" class="secondary" @click="getCurrentLocation">
+    📍 Use current location
+  </button>
+</div>
+
 
     </p>
 
