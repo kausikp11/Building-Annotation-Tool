@@ -197,7 +197,7 @@
 
     <p>
       <label for="front_elevation">Front Elevation:
-        <input type="file" id="front_elevation" @change="onFileChange" accept="image/*" required />
+        <input type="file" id="front_elevation" v-model="front_elevation" @change="onFileChange" accept="image/*" required />
       </label>
     </p>
 
