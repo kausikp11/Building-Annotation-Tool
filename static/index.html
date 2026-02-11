@@ -178,9 +178,6 @@
   <form @submit.prevent="submitForm">
     <h1>Map Data</h1>
 
-    <p v-if="error" style="color:red">{{ error }}</p>
-    <p v-if="success" style="color:green">{{ success }}</p>
-
     <p>
       <label for="username">Username:
         <input type="text" v-model="username" id="username" name="username" required>
@@ -205,39 +202,37 @@
     </p>
 
     <p>
-    <h2>Geo Coordinates:</h2>
-    <div class="field-group">
-      <div>
-        <label class="required">Latitude</label>
-        <input type="number" v-model="latitude" step="any" required />
-      </div>
+      <h2>Geo Coordinates:</h2>
+        <div class="field-group">
+          <div>
+            <label class="required">Latitude</label>
+            <input type="number" v-model="latitude" step="any" required />
+          </div>
 
-      <div>
-        <label class="required">Longitude</label>
-        <input type="number" v-model="longitude" step="any" required />
-      </div>
+          <div>
+            <label class="required">Longitude</label>
+            <input type="number" v-model="longitude" step="any" required />
+          </div>
 
-      <div>
-        <label>Altitude (m)</label>
-        <input type="number" v-model="altitude" step="any" />
-      </div>
+          <div>
+            <label>Altitude (m)</label>
+            <input type="number" v-model="altitude" step="any" />
+          </div>
 
-      <div>
-        <label>Accuracy (m)</label>
-        <input type="number" v-model="accuracy" step="any" />
-      </div>
-    </div>
+          <div>
+            <label>Accuracy (m)</label>
+            <input type="number" v-model="accuracy" step="any" />
+          </div>
+        </div>
 
-    <h3>Pick location on map</h3>
-    <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
+      <h3>Pick location on map</h3>
+        <div id="map" style="height: 350px; width: 100%; margin-bottom: 10px;"></div>
 
-    <div style="display:flex; gap:12px; margin-bottom:12px;">
-      <button type="button" class="secondary" @click="getCurrentLocation">
-        📍 Use current location
-      </button>
-    </div>
-
-
+        <div style="display:flex; gap:12px; margin-bottom:12px;">
+          <button type="button" class="secondary" @click="getCurrentLocation">
+            📍 Use current location
+          </button>
+        </div>
     </p>
 
     <p>
@@ -480,10 +475,10 @@
         this.street_name = "",
         this.front_elevation = null,
         this.geo_coordinate = { latitude: 0, longitude: 0, altitude: 0, accuracy: 0 },
-        this.latitude = latitude,
-        this.longitude = longitude,
-        this.altitude = altitude,
-        this.accuracy = accuracy,
+        this.latitude = 0,
+        this.longitude = 0,
+        this.altitude = 0,
+        this.accuracy = 0,
         this.date_time = "",
         this.other_level = "",
         this.no_of_storeys = 0,
